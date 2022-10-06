@@ -28,11 +28,20 @@ struct JWKKey {
   func asSigningVerifier() -> SigningVerifier? {
     // JOSE spec explainer: https://github.com/Spomky-Labs/jose/blob/master/doc/object/jwk.md#octet-key-pair-okp
     if kty == "OKP" /* octet key pair */ && rawData["crv"] == "Ed25519" {
-      if #available(iOS 13.0, *) {
-        guard let data = Data(base64UrlEncoded: rawData["x"] ?? ""),
-          let key = try? Curve25519.Signing.PublicKey(rawRepresentation: data) else { return nil }
-        return key
-      }
+      guard let data = Data(base64UrlEncoded: rawData["x"] ?? ""),
+        let key = try? Curve25519.Signing.PublicKey(rawRepresentation: data) else { return nil }
+      return key
+    }
+
+    return nil
+  }
+
+  func asKeyAgreementPublicKey() -> AgreementPublicKey? {
+    // JOSE spec explainer: https://github.com/Spomky-Labs/jose/blob/master/doc/object/jwk.md#octet-key-pair-okp
+    if kty == "OKP" /* octet key pair */ && rawData["crv"] == "X25519" {
+      guard let data = Data(base64UrlEncoded: rawData["x"] ?? ""),
+        let key = try? Curve25519.KeyAgreement.PublicKey(rawRepresentation: data) else { return nil }
+      return key
     }
 
     return nil
