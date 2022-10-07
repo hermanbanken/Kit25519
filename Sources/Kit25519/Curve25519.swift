@@ -9,9 +9,9 @@ import Foundation
 import CryptoKit
 
 extension Curve25519.Signing.PrivateKey: Signer {
-  var `public`: SigningVerifier { self.publicKey }
+  public var `public`: SigningVerifier { self.publicKey }
 
-  var der: Data {
+  public var der: Data {
     get { return ASN1.Ed25519PrivateKey(rawBytes: rawRepresentation).der }
   }
 }
@@ -19,33 +19,33 @@ extension Curve25519.Signing.PrivateKey: Signer {
 extension CryptoKit.Curve25519.Signing.PublicKey: SigningVerifier {}
 
 extension Curve25519.Signing.PublicKey: DerRepresentable {
-  var der: Data {
+  public var der: Data {
     get { return ASN1.Ed25519PublicKey(rawBytes: rawRepresentation).der }
   }
 }
 
 extension Curve25519.KeyAgreement.PublicKey: DerRepresentable {
-  var der: Data {
+  public var der: Data {
     get { return ASN1.X25519PublicKey(rawBytes: rawRepresentation).der }
   }
 }
 
 extension Curve25519.KeyAgreement.PublicKey: AgreementPublicKey {
-  var data: Data {
+  public var data: Data {
     return self.rawRepresentation
   }
 }
 
 extension Curve25519.KeyAgreement.PrivateKey: AgreementPrivateKey {
-  var `public`: AgreementPublicKey {
+  public var `public`: AgreementPublicKey {
     return self.publicKey
   }
 
-  var der: Data {
+  public var der: Data {
     get { return ASN1.X25519PrivateKey(rawBytes: rawRepresentation).der }
   }
 
-  func deriveSymmetricKey(salt: Data, sharedInfo: Data, othersPublicKey: AgreementPublicKey) throws -> SymmetricBlackbox {
+  public func deriveSymmetricKey(salt: Data, sharedInfo: Data, othersPublicKey: AgreementPublicKey) throws -> SymmetricBlackbox {
     guard let otherKey = othersPublicKey as? Curve25519.KeyAgreement.PublicKey else {
       throw Kit25519Error.invalidInputKey
     }
@@ -53,7 +53,7 @@ extension Curve25519.KeyAgreement.PrivateKey: AgreementPrivateKey {
   }
 }
 
-extension ASN1 {
+public extension ASN1 {
   var asAgreementPrivateKey: AgreementPrivateKey {
     get throws {
       switch self {
@@ -115,7 +115,7 @@ extension ASN1 {
   }
 }
 
-enum Kit25519Error: Error {
+public enum Kit25519Error: Error {
   case invalidInputKey
   case invalidPublicKey(error: Error)
 }

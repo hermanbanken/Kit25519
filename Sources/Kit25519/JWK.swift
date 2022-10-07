@@ -8,14 +8,14 @@
 import Foundation
 import CryptoKit
 
-struct JWKKeySet: Decodable {
-  let keys: [JWKKey]
+public struct JWKKeySet: Decodable {
+  public let keys: [JWKKey]
 }
 
 /// ## Basic support for JSON Web Key (JWK) format
 /// This only supports OKP keys and only Curve25519 because we don't plan on using other schemas.
 /// Still, adhering to the JWK format allows us to graceflly start adding more schemas when required.
-struct JWKKey {
+public struct JWKKey {
   var rawData: [String: String]
   let kty: String
   let kid: String?
@@ -25,7 +25,7 @@ struct JWKKey {
     case kid
   }
 
-  func asSigningVerifier() -> SigningVerifier? {
+  public func asSigningVerifier() -> SigningVerifier? {
     // JOSE spec explainer: https://github.com/Spomky-Labs/jose/blob/master/doc/object/jwk.md#octet-key-pair-okp
     if kty == "OKP" /* octet key pair */ && rawData["crv"] == "Ed25519" {
       guard let data = Data(base64UrlEncoded: rawData["x"] ?? ""),
@@ -36,7 +36,7 @@ struct JWKKey {
     return nil
   }
 
-  func asKeyAgreementPublicKey() -> AgreementPublicKey? {
+  public func asKeyAgreementPublicKey() -> AgreementPublicKey? {
     // JOSE spec explainer: https://github.com/Spomky-Labs/jose/blob/master/doc/object/jwk.md#octet-key-pair-okp
     if kty == "OKP" /* octet key pair */ && rawData["crv"] == "X25519" {
       guard let data = Data(base64UrlEncoded: rawData["x"] ?? ""),
@@ -49,7 +49,7 @@ struct JWKKey {
 }
 
 extension JWKKey: Decodable {
-  init(from decoder: Decoder) throws {
+  public init(from decoder: Decoder) throws {
     let rawData = try decoder.singleValueContainer().decode([String: String].self)
     let container = try decoder.container(keyedBy: CodingKeys.self)
     self.kty = try container.decode(String.self, forKey: .kty)
@@ -59,7 +59,7 @@ extension JWKKey: Decodable {
 }
 
 extension JWKKey: Hashable, Equatable {
-  func hash(into hasher: inout Hasher) {
+  public func hash(into hasher: inout Hasher) {
     hasher.combine(kty)
     hasher.combine(kid)
     hasher.combine(rawData)

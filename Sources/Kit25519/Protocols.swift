@@ -7,17 +7,17 @@
 
 import Foundation
 
-protocol DerRepresentable {
+public protocol DerRepresentable {
   var der: Data { get }
 }
 
-protocol Signer: DerRepresentable {
+public protocol Signer: DerRepresentable {
   /// Generates as signature
   func signature<D>(for data: D) throws -> Data where D: DataProtocol
   var `public`: SigningVerifier { get }
 }
 
-protocol SigningVerifier: DerRepresentable {
+public protocol SigningVerifier: DerRepresentable {
   /// Verifies a signature
   ///
   /// - Parameters:
@@ -27,17 +27,17 @@ protocol SigningVerifier: DerRepresentable {
   func isValidSignature<S, D>(_ signature: S, for data: D) -> Bool where S: DataProtocol, D: DataProtocol
 }
 
-protocol AgreementPrivateKey: DerRepresentable {
+public protocol AgreementPrivateKey: DerRepresentable {
   func deriveSymmetricKey(salt: Data, sharedInfo: Data, othersPublicKey: AgreementPublicKey) throws -> SymmetricBlackbox
 
   var `public`: AgreementPublicKey { get }
 }
 
-protocol AgreementPublicKey: DerRepresentable {
+public protocol AgreementPublicKey: DerRepresentable {
   var data: Data { get }
 }
 
-protocol SymmetricBlackbox: ContiguousBytes {
+public protocol SymmetricBlackbox: ContiguousBytes {
   func encrypt(data: Data) throws -> Data
   func decrypt(data: Data) throws -> Data
 }

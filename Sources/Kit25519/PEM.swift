@@ -8,8 +8,8 @@
 import Foundation
 import ASN1Parser
 
-enum PEM {
-  static func Parse(pem: Data) throws -> ASN1 {
+public enum PEM {
+  public static func Parse(pem: Data) throws -> ASN1 {
     let regex = NSRegularExpression("^-----BEGIN (?<begin>[^-]+)-----(?<base64>[\\s\\S]*)-----END (?<end>[^-]+)-----\\s?$")
     let str = String(decoding: pem, as: UTF8.self)
     let match = regex.firstMatch(str)
@@ -28,7 +28,7 @@ enum PEM {
 
     return try ASN1.Parse(der: der)
   }
-  static func Encode(subject: DerRepresentable, kind: String) -> Data {
+  public static func Encode(subject: DerRepresentable, kind: String) -> Data {
     return "-----BEGIN \(kind)-----\n".data(using: .utf8)! + subject.der.base64EncodedData() + "\n-----END \(kind)-----".data(using: .utf8)!
   }
 }

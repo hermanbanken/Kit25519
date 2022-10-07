@@ -14,7 +14,7 @@ extension SymmetricKey: SymmetricBlackbox {
   /// - Parameters:
   ///   - data: The message to be encrypted
   /// - Returns: Combined output has the format: nonce + ciphertext + tag
-  func encrypt(data msg: Data) throws -> Data {
+  public func encrypt(data msg: Data) throws -> Data {
     let box = try ChaChaPoly.seal(msg, using: self, nonce: ChaChaPoly.Nonce())
     return box.combined
   }
@@ -22,7 +22,7 @@ extension SymmetricKey: SymmetricBlackbox {
   /// - Parameters:
   ///   - data: The combined input (nonce + ciphertext + tag) to be decrypted
   /// - Returns: Encrypted data
-  func decrypt(data: Data) throws -> Data {
+  public func decrypt(data: Data) throws -> Data {
     return try ChaChaPoly.open(ChaChaPoly.SealedBox(combined: data), using: self)
   }
 

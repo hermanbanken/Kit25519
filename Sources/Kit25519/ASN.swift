@@ -14,7 +14,7 @@ private let curveX25519Header = try! ASN1Sequence(ASN1ObjectIdentifier(oid: "1.3
 
 /// This exists as a convenience wrapper to handle DER encoded forms of (Curve25519) keys, and to encode those keys back to DER.
 /// Notably there are 2 formats of Curve25519, being X25519 and Ed25519 which have a different representation/and other optimized usage.
-enum ASN1: Equatable, DerRepresentable {
+public enum ASN1: Equatable, DerRepresentable {
   case X25519PublicKey(rawBytes: Data)
   case X25519PrivateKey(rawBytes: Data)
   case Ed25519PublicKey(rawBytes: Data)
@@ -22,7 +22,7 @@ enum ASN1: Equatable, DerRepresentable {
 
   /// Parameter data is expected to be ASN.1 DER binary format.
   /// This format is typically Base64 encoded within header and trailer of a PEM file
-  static func Parse(der: Data) throws -> ASN1 {
+  public static func Parse(der: Data) throws -> ASN1 {
     let asnValue: ASN1Value = try DERParser.parse(der: der)
 
     // https://www.rfc-editor.org/rfc/rfc7468: Textual Encodings of PKIX, PKCS, and CMS Structures:
@@ -57,7 +57,7 @@ enum ASN1: Equatable, DerRepresentable {
     throw ASN1Error.unsupportedASNSequence
   }
 
-  var der: Data {
+  public var der: Data {
     switch self {
     // Ed25519
     case .Ed25519PrivateKey(rawBytes: let data):
@@ -73,7 +73,7 @@ enum ASN1: Equatable, DerRepresentable {
     }
   }
 
-  func toPEM() -> Data {
+  public func toPEM() -> Data {
     switch self {
     case .Ed25519PrivateKey, .X25519PrivateKey:
       return PEM.Encode(subject: self, kind: "PRIVATE KEY")
@@ -83,7 +83,7 @@ enum ASN1: Equatable, DerRepresentable {
   }
 }
 
-extension ASN1Value {
+public extension ASN1Value {
   var data: Data {
     get {
       return DEREncoder.encode(der: self)
@@ -91,7 +91,7 @@ extension ASN1Value {
   }
 }
 
-enum ASN1Error: Error {
+public enum ASN1Error: Error {
   case invalidPemHeaderTrailer
   case invalidBase64
   case unsupportedASNSequence

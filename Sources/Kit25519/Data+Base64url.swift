@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension Data {
+public extension Data {
   /// base64url encoding is different from base64 due to some characters requiring url encoding
   init?(base64UrlEncoded: String) {
     let replaced = base64UrlEncoded
