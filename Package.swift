@@ -14,7 +14,7 @@ let package = Package(
             targets: ["Kit25519"]),
     ],
     dependencies: [
-      .package(url: "https://github.com/hermanbanken/ASN1Parser.git", branch: "main")
+      .package(url: "https://github.com/hermanbanken/ASN1Parser.git", revision: "64f242bda54b7da542268fcba1569607b00e53ec")
     ],
     targets: [
         .target(
